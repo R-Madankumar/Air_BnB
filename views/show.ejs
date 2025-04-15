@@ -1,0 +1,89 @@
+<% layout('layouts/biolerplate') -%>
+
+<div class="d-flex justify-content-center">
+    <div class="row mt-3 w-50">
+        <div class="col-12 text-center">
+            <h3><%= listing.title %></h3>
+        </div>
+
+        <div class="listing-card  ">
+            <img src="<%= listing.image.url %>" class="card-img-top rounded-top" alt="<%= listing.title %>"style="width: 80%; max-height: 300px; object-fit: cover; margin: auto;" />
+
+
+
+            <div class="card-body">
+                <p class="card-text">
+                    <p>Owned by <b><%= listing.owner.username %></b></p>
+                    <%= listing.description %><br />
+                    &#8377; <%= (listing.price || 0).toLocaleString("en-IN") %>/night<br />
+                    <%= listing.location %><br />
+                    <%= listing.country %>
+                </p>
+            </div>
+
+
+            <% if (currUser && listing.owner && currUser._id.equals(listing.owner._id)) { %>
+
+            <div class="card-footer text-center">
+                <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark">Edit</a>
+
+                <form method="POST" class="d-inline" action="/listings/<%= listing._id %>?_method=DELETE">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+                
+            </div>
+            <% } %>
+        </div>
+
+       
+            <div class="col-12 text-center mb-3">
+                <h4>Leave a Review</h4>
+                <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
+
+                    <div class="mb-3 mt-3">
+                    <label for="rating" class="form-label">Rating</label>
+                    <input type="range" min="1" max="5" id="rating" name="review[rating]0" class="form-range">
+                    </div>
+                    <div  class="mb-3 mt-3">
+                        <label for="comment" class="form-label">Comments</label>
+                        <textarea
+                        name="review[comment]"
+                        id="comment"
+                        cols="500"
+                        rows="5"
+                        class="form-control"
+                        required
+                        ></textarea>
+                        <div class="invalid-feedback">
+                            Please submit some comments for review
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-dark">Submit</button>
+                </form>
+      
+
+        <div class="col-12 text-center mt-3">
+            <p><b>All Reviews</b></p>
+            <div class="row  mb-3">
+                <% for(let review of listing.reviews) { %>
+                    <div class="card col-5 ms-3   mb-3">
+                      <div class="card-body">
+                        <h5 class="card-title">@<%= review.author.username %></h5>
+                        <p class="card-text"><%= review.comment %></p>
+                        <p class="card-text"><%= review.rating %>★</p>
+                      </div>
+                      
+                      <form class="mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"   >
+                        <button class="btn btn-sm btn-dark">Delete</button>
+                      </form>
+                     
+                    </div>
+                <% } %>
+            </div>
+            
+           
+        </div>
+    </div>
+    
+      
+</div>

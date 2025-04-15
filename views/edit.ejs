@@ -1,0 +1,51 @@
+<% layout('layouts/biolerplate') -%>
+
+<div class="row mt-3 mb-3 justify-content-center">
+    <div class="col-8">
+        <h3 class="text-center">Edit Listing</h3>
+    </div>
+
+    <div class="card col-6">
+        <img src="<%= listing.image.url %>" class="card-img-top rounded-top" alt="<%= listing.title %>"
+            style="width: 80%; max-height: 300px; object-fit: cover; display: block; margin: 20px auto;" />
+
+        <div class="card-body">
+            <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" novalidate class="needs-validation">
+                <div class="mb-3">
+                    <label class="form-label">Title:</label>
+                    <input type="text" name="title" value="<%= listing.title %>" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description:</label>
+                    <textarea name="description" class="form-control" required><%= listing.description %></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Location:</label>
+                    <input type="text" name="location" value="<%= listing.location %>" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Country:</label>
+                    <input type="text" name="country" value="<%= listing.country %>" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Price:</label>
+                    <input type="number" name="price" value="<%= listing.price %>" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Image URL:</label>
+                    <input type="text" name="imageUrl" value="<%= listing.image.url %>" class="form-control">
+                </div>
+
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-dark add-btn">Update </button>
+                    <a href="/listings/<%= listing._id %>" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+<% layout('layouts/biolerplate') -%>
+
+<style>
+    .card {
+        border-radius: 15px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow */
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: scale(1.05); /* Slight zoom effect on hover */
+    }
+</style>
+
+<body>
+    <h1>All Listings</h1>
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+        <% listings.forEach(listing => { %>
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+            <div class="card col listing-card">
+                <img src="<%= listing.image.url %>" alt="listing_image" style="height: 20rem; border-radius: 15px 15px 0 0;" />
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <b><%= listing.title %><br /></b>
+                        &#8377; <%= (listing.price || 0).toLocaleString("en-IN") %>/night
+                    </p>
+                </div>
+            </div>
+        </a>
+        <% }); %>
+    </div>
+</body>

@@ -4,13 +4,7 @@ const { reviewSchema } = require("./schema.js");
 const Listing = require("./models/Listing");
 const Review = require("./models/review.js");
 
-// module.exports.isLoggedIn = (req, res, next) => {
-//     if (!req.isAuthenticated()) {
-//         req.flash("error", "You must be logged in first!");
-//         return res.redirect("/login");
-//     }
-//     next();
-// };
+
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
       req.session.redirectUrl = req.originalUrl; // 👈 This sets the last visited URL

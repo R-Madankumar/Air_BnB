@@ -10,7 +10,7 @@
             style="width: 80%; max-height: 300px; object-fit: cover; display: block; margin: 20px auto;" />
 
         <div class="card-body">
-            <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" novalidate class="needs-validation">
+            <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Title:</label>
                     <input type="text" name="title" value="<%= listing.title %>" class="form-control" required>
@@ -37,8 +37,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Image URL:</label>
-                    <input type="text" name="imageUrl" value="<%= listing.image.url %>" class="form-control">
+                    <label class="form-label">Original Image:</label><br>
+                    <img src="<%= originalImageUrl %>" alt="Original Image" height="100px" width="100px" />
+                </div>
+                
+
+                <div class="mb-3">
+                    <label class="form-label">Upload New Image :</label>
+                    <input type="file" name="listing[image]" class="form-control">
                 </div>
 
                 <div class="card-footer text-center">

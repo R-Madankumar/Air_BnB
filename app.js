@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
+
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -7,10 +12,12 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
+
 
 
 const homeRoute = require("./routes/home.js");
@@ -28,19 +35,29 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = 8080;
 
+// MongoDB connection
+const dbUrl = process.env.ATLASDB_URL;
+
+mongoose.connect(dbUrl)
+  .then(() => console.log("✅ MongoDB Connected to airbnb_clone"))
+  .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
 
-// MongoDB Connection
-mongoose.connect("mongodb://127.0.0.1:27017/airbnb_clone")
- .then(() => console.log("✅ MongoDB Connected to airbnb_clone"))  
- .catch(err => console.error("❌ MongoDB Connection Error:", err)
-);
+async function main() {
+  await mongoose.connect(dbUrl);
+}
 
-
-
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+      secret: process.env.SECRET,
+    },
+    touchAfter: 24 * 3600,
+});
 
 const sessionOptions = {
-    secret: "mysupersecretcode",
+    store,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -49,6 +66,11 @@ const sessionOptions = {
         httpOnly: true
     },
 };
+
+store.on("error", () => {
+    console.log("ERROR IN MONGO SESSION STORE", err);
+});
+
 
 
 app.use(session(sessionOptions));
@@ -86,8 +108,6 @@ app.use("/", userRouter);
 
 
 
-
-
 // Catch-all for undefined routes
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found"));
@@ -98,6 +118,10 @@ app.all("*", (req, res, next) => {
 // Global error handler
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = "Something went wrong!" } = err;
+    if (statusCode === 404) {
+        req.flash("error", message);
+        return res.redirect("/listings");
+    }
     res.status(statusCode).render("error.ejs",{err});
 });
 
